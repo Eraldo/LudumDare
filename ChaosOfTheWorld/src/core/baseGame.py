@@ -6,31 +6,23 @@ Created on 14.12.2012
 
 import pygame
 
-class BaseGame:
+class BaseGame(object):
     run = True
     screen = None
     currentState = None
     keymap = {}
     
-    def __init__(self, startState):
-        pygame.init()
-        self.screen = pygame.display.set_mode((640, 480))
-        
+    def __init__(self, startState):        
         self.setup()
         self.changeState(startState)
         
         while self.run:
-            self.update()
-            self.draw()
+            self.currentState.update()
+            self.currentState.draw()  
             
     def setup(self):
-        pass
-    
-    def update(self):
-        self.currentState.update()
-    
-    def draw(self):
-        self.currentState.draw()
+        pygame.init()
+        self.screen = pygame.display.set_mode((640, 480))
     
     def changeState(self, state):
         state.setup(self)
