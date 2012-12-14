@@ -4,12 +4,18 @@ Created on 14.12.2012
 @author: bernhard
 '''
 
+import pygame
+
 class BaseGame:
     run = True
+    screen = None
     currentState = None
     keymap = {}
     
     def __init__(self, startState):
+        pygame.init()
+        self.screen = pygame.display.set_mode((640, 480))
+        
         self.setup()
         self.changeState(startState)
         
