@@ -3,28 +3,31 @@ Created on 14.12.2012
 
 @author: bernhard
 '''
-import abc
-
 
 class BaseGame:
     run = True
+    currentState = None
     keymap = {}
     
-    def __init__(self):
+    def __init__(self, startState):
         self.setup()
+        self.changeState(startState)
         
         while self.run:
             self.update()
             self.draw()
             
-    @abc.abstractmethod
     def setup(self):
         pass
     
-    @abc.abstractmethod
     def update(self):
-        pass
+        self.currentState.update()
     
-    @abc.abstractmethod
     def draw(self):
-        pass
+        self.currentState.draw()
+    
+    def changeState(self, state):
+        state.setup(self)
+        self.currentState = state
+            
+            

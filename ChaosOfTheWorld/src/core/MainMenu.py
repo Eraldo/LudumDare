@@ -3,15 +3,16 @@ Created on 14.12.2012
 
 @author: bernhard
 '''
+import GameState
 
-class GameState(object):
-    game = None
-    
+class MainMenu(GameState):
+
     def __init__(self):
-        pass 
-    
-    def setup(self, game):
-        self.game = game
+        '''
+        Constructor
+        '''
+        
+    def setup(self):
         return
         
     def update(self):
@@ -19,3 +20,4 @@ class GameState(object):
     
     def draw(self):
         return
+    
