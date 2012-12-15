@@ -10,7 +10,7 @@ from OpenGL.GL import *#@UnusedWildImport
 import sys
 
 class BaseGame(object):
-    coordinateSize = 32 / 2
+    coordinateSize = 16 / 2
     
     run = True
     screen = None

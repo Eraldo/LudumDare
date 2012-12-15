@@ -4,22 +4,9 @@ Created on 15.12.2012
 @author: bernhard
 '''
 from OpenGL.GL import *#@UnusedWildImport
+from graphic import *#@UnusedWildImport
 import math
-import pygame
 import random
-
-def drawQuad():
-    glBegin (GL_QUADS)
-    glTexCoord2f (0, 1);
-    glVertex2f(-0.5, 0.5)
-    glTexCoord2f (1, 1)
-    glVertex2f(0.5, 0.5)
-    glTexCoord2f (1, 0)
-    glVertex2f(0.5, -0.5)
-    glTexCoord2f (0, 0)
-    glVertex2f(-0.5, -0.5)
-    glEnd();
-
 
 def dotproduct(v1, v2):
     return sum((a*b) for a, b in zip(v1, v2))
@@ -29,7 +16,6 @@ def length(v):
 
 def angle(v1, v2):
     return -(math.atan2(v2[1], v2[0]) - math.atan2(v1[1], v1[0])) * 180.0 / math.pi
-    #return math.acos(dotproduct(v1, v2) / (length(v1) * length(v2))) * 180.0 / math.pi
 
 
 NORTH, EAST, SOUTH, WEST = (0, 1), (1, 0), (0, -1), (-1, 0)
@@ -55,10 +41,12 @@ class World(object):
     def draw(self):
         glPushMatrix()
         glRotate(angle(NORTH, self.player.direction), 0, 0, 1)
+        
         for x in range(self.player.position[0] - self.renderSize, self.player.position[0] + self.renderSize + 1):
             for y in range(self.player.position[1] - self.renderSize, self.player.position[1] + self.renderSize + 1):
                 if (x, y) in self.tiles:                      
                     glPushMatrix()
+                    #TODO: Group per texture
                     glTranslatef(x - self.player.position[0], y - self.player.position[1], 0.0)
                     self.tiles[(x, y)].draw()
                     glPopMatrix()
@@ -78,34 +66,16 @@ class World(object):
                 
                
 class Player(object):
-    def __init__(self):
+    def __init__(self, steps):
         self.direction = random.choice([NORTH, EAST, WEST, SOUTH])
         self.texture = Texture("player.png")
         self.position = (0, 0)
-        self.steps = 250
+        self.steps = steps
         self.bloodPoints = 20
         
     def draw(self):
         self.texture.bind()
         drawQuad()
-        
-class Texture(object):
-    def __init__(self, image):
-        self.loadImage(image)
-    
-    def loadImage(self, image):
-        textureSurface = pygame.image.load("../../data/" + image)
-        self.textureData = pygame.image.tostring(textureSurface, "RGBA", 1)
-        self.width = textureSurface.get_width()
-        self.height = textureSurface.get_height()
- 
-    def bind(self):
-        texture = 0#glGenTextures(1)
-        glBindTexture(GL_TEXTURE_2D, texture)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, self.width, self.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, self.textureData)
-        return texture
     
 class TileType(object):   
     

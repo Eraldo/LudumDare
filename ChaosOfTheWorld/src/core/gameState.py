@@ -4,9 +4,10 @@ Created on 14.12.2012
 @author: bernhard
 '''
 from OpenGL.GL import *#@UnusedWildImport
-from core.world import Player, turnDirection, World
+from graphic import *#@UnusedWildImport
+from world import *#@UnusedWildImport
+from hud import *#@UnusedWildImport
 import operator
-import pygame
 import sys
 
 
@@ -24,8 +25,10 @@ class GameState(object):
     
     def draw(self):
         pass
-    
 
+
+
+    
 class MenuEntry(object):
     text = None
     font = None
@@ -36,9 +39,8 @@ class MenuEntry(object):
     def __init__(self, text, function = None, args = []):
         self.args = args
         self.function = function
-        if pygame.font:
-            self.font = pygame.font.Font(None, 36)
-            self.text = text
+        self.font = pygame.font.Font(None, 36)
+        self.text = text
             
     def draw(self, screen, position, selected):
         
@@ -47,27 +49,14 @@ class MenuEntry(object):
         rendered = self.font.render(self.text, 1, (255 * selected, 255, 255 * selected))
         texture = pygame.image.tostring(rendered, 'RGBA', True)
         
-        textureId = 0#glGenTextures(1)
-        glBindTexture(GL_TEXTURE_2D, textureId)
+        glBindTexture(GL_TEXTURE_2D, 0)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, rendered.get_width(), rendered.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture)
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST )  
         
         aspect = rendered.get_width() * 1.0 / rendered.get_height()
-        
-        glBegin (GL_QUADS)
-        glTexCoord2f (0, 1);
-        glVertex2f(-aspect, 0.5)
-        glTexCoord2f (1, 1)
-        glVertex2f(aspect, 0.5)
-        glTexCoord2f (1, 0)
-        glVertex2f(aspect, -0.5)
-        glTexCoord2f (0, 0)
-        glVertex2f(-aspect, -0.5)
-        glEnd();
+        draw(aspect)
         
         glPopMatrix()
-        
-        #glDeleteTextures(textureId)
         
     def execute(self):
         if self.function:
@@ -119,9 +108,10 @@ class MainMenu(GameState):
             drawPos[1] = drawPos[1] - self.game.coordinateSize / 2
             
 class Running(GameState):
+    maxSteps = 255
     
     def __init__(self):
-        self.player = Player()
+        self.player = Player(self.maxSteps)
         self.world = None
         self.initialized = False
 
@@ -135,14 +125,13 @@ class Running(GameState):
             if tile.canEnter(self.player):
                 tile.stepOnto(self.player)
                 self.player.position = newPosition
+                self.player.steps = self.player.steps - 1
         
     def _playerTurnLeft(self):
         self.player.direction = turnDirection(self.player.direction, -1)
-        sys.stdout.flush()
         
     def _playerTurnRight(self):
         self.player.direction = turnDirection(self.player.direction, 1)
-        sys.stdout.flush()
         
     def setup(self, game):
         super(Running, self).setup(game)
@@ -153,14 +142,18 @@ class Running(GameState):
         if not self.initialized:
             
             self.world = World(self.player, game.coordinateSize)
-            
-            
+            self.hud = Hud(self)            
             self.initialized = True
         
     def update(self):
         pass
     
     def draw(self):
+        
         glTranslate(-(self.game.aspect - 1.0) * self.game.coordinateSize + 0.5, 0.0, 0.0)
         self.world.draw()
         self.player.draw()
+        glTranslate(self.game.coordinateSize, 0.0, 0.0)
+        self.hud.draw()
+        
+        
