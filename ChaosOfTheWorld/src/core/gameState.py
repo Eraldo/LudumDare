@@ -5,6 +5,10 @@ Created on 14.12.2012
 '''
 import pygame
 import sys
+import world
+from OpenGL.GL import *
+from OpenGL.GLU import *
+from pygame.locals import *
 
 class GameState(object):
     game = None
@@ -37,8 +41,35 @@ class MenuEntry(object):
             self.text = text
             
     def draw(self, screen, position, selected):
+        
+        glPushMatrix()
+        glTranslatef(position[0], position[1], 0.0)
         rendered = self.font.render(self.text, 1, (255 * selected, 255, 255 * selected))
-        screen.blit(rendered, rendered.get_rect(centerx = position[0], centery = position[1]))
+        texture = pygame.image.tostring(rendered, 'RGBA', True)
+        
+        textureId = glGenTextures(1)
+        glBindTexture(GL_TEXTURE_2D, textureId)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, rendered.get_width(), rendered.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture)
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST )
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST )  
+        
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
+        aspect = rendered.get_width() * 1.0 / rendered.get_height()
+        
+        glBegin (GL_QUADS)
+        glTexCoord2f (0, 1);
+        glVertex2f(-aspect, 0.5)
+        glTexCoord2f (1, 1)
+        glVertex2f(aspect, 0.5)
+        glTexCoord2f (1, 0)
+        glVertex2f(aspect, -0.5)
+        glTexCoord2f (0, 0)
+        glVertex2f(-aspect, -0.5)
+        glEnd();
+        
+        glPopMatrix()
+        
+        glDeleteTextures(textureId)
         
     def execute(self):
         if self.function:
@@ -84,19 +115,22 @@ class MainMenu(GameState):
         pass
     
     def draw(self):
-        drawPos = [self.game.screen.get_width() / 2, self.game.screen.get_height() / 5]
+        drawPos = [0, self.game.coordinateSize / 2]
         for number, option in enumerate(self.options):
-            
             option.draw(self.game.screen, drawPos, number != self.selection)
-            drawPos[1] = drawPos[1] + self.game.screen.get_height() / 5
+            drawPos[1] = drawPos[1] - self.game.coordinateSize / 2
             
-
-    
-    
 class Running(GameState):
+    
+    def __init__(self):
+        self.world = world.World()
+
+    def _menu(self):
+        self.game.changeState(MainMenu)
     
     def setup(self, game):
         super(Running, self).setup(game)
+        game.keyUp[pygame.K_ESCAPE] = self._menu
         
     def update(self):
         pass
