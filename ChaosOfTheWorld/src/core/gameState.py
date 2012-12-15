@@ -3,12 +3,12 @@ Created on 14.12.2012
 
 @author: bernhard
 '''
+from OpenGL.GL import *#@UnusedWildImport
+from core.world import Player, turnDirection, World
+import operator
 import pygame
 import sys
-import world
-from OpenGL.GL import *
-from OpenGL.GLU import *
-from pygame.locals import *
+
 
 class GameState(object):
     game = None
@@ -47,13 +47,11 @@ class MenuEntry(object):
         rendered = self.font.render(self.text, 1, (255 * selected, 255, 255 * selected))
         texture = pygame.image.tostring(rendered, 'RGBA', True)
         
-        textureId = glGenTextures(1)
+        textureId = 0#glGenTextures(1)
         glBindTexture(GL_TEXTURE_2D, textureId)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, rendered.get_width(), rendered.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture)
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST )
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST )  
         
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1)
         aspect = rendered.get_width() * 1.0 / rendered.get_height()
         
         glBegin (GL_QUADS)
@@ -69,7 +67,7 @@ class MenuEntry(object):
         
         glPopMatrix()
         
-        glDeleteTextures(textureId)
+        #glDeleteTextures(textureId)
         
     def execute(self):
         if self.function:
@@ -123,17 +121,46 @@ class MainMenu(GameState):
 class Running(GameState):
     
     def __init__(self):
-        self.world = world.World()
+        self.player = Player()
+        self.world = None
+        self.initialized = False
 
     def _menu(self):
         self.game.changeState(MainMenu)
-    
+        
+    def _playerForward(self):
+        newPosition = tuple(map(operator.add, self.player.position, self.player.direction))
+        if newPosition in self.world.tiles:
+            tile = self.world.tiles[newPosition]
+            if tile.canEnter(self.player):
+                tile.stepOnto(self.player)
+                self.player.position = newPosition
+        
+    def _playerTurnLeft(self):
+        self.player.direction = turnDirection(self.player.direction, -1)
+        sys.stdout.flush()
+        
+    def _playerTurnRight(self):
+        self.player.direction = turnDirection(self.player.direction, 1)
+        sys.stdout.flush()
+        
     def setup(self, game):
         super(Running, self).setup(game)
         game.keyUp[pygame.K_ESCAPE] = self._menu
+        game.keyUp[pygame.K_UP] = self._playerForward
+        game.keyUp[pygame.K_LEFT] = self._playerTurnLeft
+        game.keyUp[pygame.K_RIGHT] = self._playerTurnRight
+        if not self.initialized:
+            
+            self.world = World(self.player, game.coordinateSize)
+            
+            
+            self.initialized = True
         
     def update(self):
         pass
     
     def draw(self):
-        pass
+        glTranslate(-(self.game.aspect - 1.0) * self.game.coordinateSize + 0.5, 0.0, 0.0)
+        self.world.draw()
+        self.player.draw()

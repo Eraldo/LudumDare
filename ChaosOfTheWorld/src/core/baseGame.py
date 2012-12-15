@@ -6,10 +6,8 @@ Created on 14.12.2012
 
 import pygame
 import gameState
+from OpenGL.GL import *#@UnusedWildImport
 import sys
-from OpenGL.GL import *
-from OpenGL.GLU import *
-from pygame.locals import *
 
 class BaseGame(object):
     coordinateSize = 32 / 2
@@ -28,8 +26,8 @@ class BaseGame(object):
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
         
-        aspect = self.screen.get_width() * 1.0 /  self.screen.get_height();
-        glOrtho(-aspect * self.coordinateSize, aspect * self.coordinateSize, -self.coordinateSize , self.coordinateSize, -1, 1);
+        self.aspect = self.screen.get_width() * 1.0 /  self.screen.get_height();
+        glOrtho(-self.aspect * self.coordinateSize, self.aspect * self.coordinateSize, -self.coordinateSize , self.coordinateSize, -1, 1);
         glMatrixMode(GL_MODELVIEW)
         
     def handleEvents(self):
@@ -50,20 +48,23 @@ class BaseGame(object):
         self.changeState(startState)
         
         while self.run:
+            self.clock.tick(16)
             self.handleEvents()
             self.currentState.update()
             
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
             glLoadIdentity()
+            glTranslate(0.0, 0.5, 0.0)
             self.currentState.draw()
             pygame.display.flip()
             
     def setup(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((800, 600), pygame.OPENGL | pygame.HWSURFACE | pygame.DOUBLEBUF, 16)
+        self.screen = pygame.display.set_mode((1920, 1080), pygame.OPENGL | pygame.HWSURFACE | pygame.DOUBLEBUF, 16)
         glClearColor(0.0, 0.0, 0.0, 1.0)
         self.reshape()
         
+        self.clock = pygame.time.Clock()
         glEnable(GL_TEXTURE_2D)
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
