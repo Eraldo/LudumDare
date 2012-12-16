@@ -125,7 +125,7 @@ class Running(GameState):
             if tile.canEnter(self.player):
                 tile.stepOnto(self.player)
                 self.player.position = newPosition
-                self.player.steps = self.player.steps - 1
+                self.player.steps = self.player.steps - tile.tileType.speed
         
     def _playerTurnLeft(self):
         self.player.direction = turnDirection(self.player.direction, -1)

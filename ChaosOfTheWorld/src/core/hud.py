@@ -99,16 +99,13 @@ class DisplayBase(object):
 
         aspect = rendered.get_width() * 1.0 / rendered.get_height()
         freeSpace = self.owningState.game.coordinateSize * (self.owningState.game.aspect - 1.0) - 0.75
-        
-        
+       
         scale = freeSpace / aspect
         if scale < self.hud.scale:
             self.hud.scale = scale
         
         glTranslatef(self.hud.scale * aspect / 2.0, -1.0, 0.0)
-        glPushMatrix()
         draw(aspect, self.hud.scale)
-        glPopMatrix()
         
     def draw(self):
         glPushMatrix()
@@ -129,6 +126,8 @@ class StepDisplay(DisplayBase):
     
     def getTextColor(self):
         return (255 * (1 - self.valueRatio), 255 * self.valueRatio, 0)
+    
+    
     
 
         
