@@ -76,15 +76,15 @@ class World(object):
         csv_file_path = "../../data/overworld-1.csv" # TODO: relative | global paths
 
         tile_mapping = {
-            1: "grass-N",
-            2: "forest-N",
-            3: "water-N",
-            4: "sand-N",
-            5: "snow-N",
-            6: "ice-N",
-            7: "swamp-N",
-            8: "road-N",
-            12: "stone-N",
+            1: "grass-R",
+            2: "forest-R",
+            3: "water-R",
+            4: "sand-R",
+            5: "snow-R",
+            6: "ice-R",
+            7: "swamp-R",
+            8: "road-R",
+            12: "stone-R",
             13: "shelter-W",
             14: "shelter-E",
             15: "shelter-N",
@@ -96,6 +96,7 @@ class World(object):
                              "E": EAST,
                              "S": SOUTH,
                              "W": WEST,
+                             "R": random.choice(DIRECTIONS)
                              }
         
         for v in tile_mapping.itervalues():
