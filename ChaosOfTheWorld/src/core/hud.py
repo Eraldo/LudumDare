@@ -13,14 +13,27 @@ class Hud(object):
         self.stepDisplay = StepDisplay(owningState, self)
         self.bloodPointDisplay = BloodDisplay(owningState, self)
         self.textBox = TextBox(owningState, self)
+        self.inventory = Inventory(owningState, self)
         self.scale = 1.0
         
     def draw(self):
-        glTranslatef(0.5, self.owningState.game.coordinateSize - 0.5, 0.0)        
+        glPushMatrix()
+        glTranslatef(0.5, self.owningState.game.coordinateSize - 0.5, 0.0)
         self.stepDisplay.draw()
         self.bloodPointDisplay.draw()
         self.textBox.draw()
+        glPopMatrix()
+        glTranslatef(0.5, -self.owningState.game.coordinateSize - 0.5, 0.0)
         
+        
+class Inventory(object):
+    def __init__(self, owningState, hud):
+        self.owningState = owningState
+        self.hud = hud
+        
+    def draw(self):
+        pass
+
 class TextBox(object):
     def __init__(self, owningState, hud):
         self.text = "This is my test sentence, there are many like it, but this one is mine!"
@@ -54,7 +67,6 @@ class TextBox(object):
             glTranslatef(self.hud.scale * aspect / 4.0 + 0.1, 0.0, 0.0)
             usedSpace = usedSpace + aspect * self.hud.scale / 2.0 + 0.1
         glPopMatrix()
-
 
 class DisplayBase(object):
     def __init__(self, owningState, hud,icon_file):
