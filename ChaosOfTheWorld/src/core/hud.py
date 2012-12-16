@@ -37,8 +37,7 @@ class Inventory(object):
 class TextBox(object):
     def __init__(self, owningState, hud):
         self.text = "This is my test sentence, there are many like it, but this one is mine!"
-        #TODO: Schriftart aendern
-        font = "../../data/northwoodhigh.ttf"
+        font = "../../data/northwoodhigh.ttf" # TODO: change to relative path
         self.font = pygame.font.Font(font, 28)
         self.hud = hud
         self.owningState = owningState
