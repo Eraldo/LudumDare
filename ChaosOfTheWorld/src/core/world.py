@@ -14,13 +14,12 @@ def dotproduct(v1, v2):
 def length(v):
     return math.sqrt(dotproduct(v, v))
 
-#TODO: Optimize
 def angle(v1, v2):
-    return -(math.atan2(v2[1], v2[0]) - math.atan2(v1[1], v1[0])) * 180.0 / math.pi
+    #return -(math.atan2(v2[1], v2[0]) - math.atan2(v1[1], v1[0])) * 180.0 / math.pi
+    return turnAngle(v1, v2)
 
 
 NORTH, EAST, SOUTH, WEST = (0, 1), (1, 0), (0, -1), (-1, 0)
-
 DIRECTIONS = [NORTH, EAST, SOUTH, WEST]
 
 
@@ -28,6 +27,11 @@ def turnDirection(direction, turnDirection):
     index = DIRECTIONS.index(direction)
     index = (index + turnDirection) % len(DIRECTIONS)
     return DIRECTIONS[index]
+
+def turnAngle(dirFrom, dirTo):
+    indexFrom = DIRECTIONS.index(dirFrom)
+    indexTo = DIRECTIONS.index(dirTo)
+    return 90 * ((indexTo - indexFrom) % len(DIRECTIONS))
 
 class World(object):
     INITIAL_MAP_SIZE = 100
@@ -119,7 +123,7 @@ class Tile(object):
     
     def draw(self):
         glPushMatrix()
-        rot = angle((0.0, 1.0), self.direction)
+        rot = angle(NORTH, self.direction)
         glRotatef(rot, 0, 0, 1)
         drawQuad()
         glPopMatrix()
