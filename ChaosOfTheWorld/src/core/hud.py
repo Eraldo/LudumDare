@@ -19,27 +19,41 @@ class Hud(object):
         glTranslatef(0.5, self.owningState.game.coordinateSize - 0.5, 0.0)        
         self.stepDisplay.draw()
         self.bloodPointDisplay.draw()
-        #self.textBox.draw()
+        self.textBox.draw()
         
 class TextBox(object):
     def __init__(self, owningState, hud):
         self.text = "This is my test sentence, there are many like it, but this one is mine!"
+        #Todo: Schriftart aendern
         self.font = pygame.font.Font(None, 18)
         self.hud = hud
+        self.owningState = owningState
         
     def draw(self):
+        lineSpace = self.owningState.game.coordinateSize * (self.owningState.game.aspect - 1.0) * 2.0 - 2.0
+        usedSpace = 0.0
+        glTranslatef(0.5, -1.0, 0.0)
+        glPushMatrix()
         for word in self.text.split(" "):
-            rendered = self.font.render(self.text, 1, (255, 255, 255))
+            rendered = self.font.render(word, 1, (255, 255, 255))
             texture = pygame.image.tostring(rendered, 'RGBA', True)
             glBindTexture(GL_TEXTURE_2D, 0)
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, rendered.get_width(), rendered.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture)
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST )
             
             aspect = rendered.get_width() * 1.0 / rendered.get_height()
-            lineSpace = self.owningState.game.coordinateSize * (self.owningState.game.aspect - 1.0) - 1.65
-        
-            glTranslatef(self.scale * aspect, -1.0, 0.0)
-            draw(aspect, self.hud.scale)
+            
+            if lineSpace - usedSpace < aspect * self.hud.scale / 2.0:
+                glPopMatrix()
+                glTranslatef(0.0, -self.hud.scale / 1.25, 0.0)
+                glPushMatrix()
+                usedSpace = 0.0
+                
+            glTranslatef(self.hud.scale * aspect / 4.0, 0.0, 0.0)
+            draw(aspect, self.hud.scale / 2.0)
+            glTranslatef(self.hud.scale * aspect / 4.0 + 0.1, 0.0, 0.0)
+            usedSpace = usedSpace + aspect * self.hud.scale / 2.0 + 0.1
+        glPopMatrix()
 
 
 class DisplayBase(object):
@@ -63,7 +77,7 @@ class DisplayBase(object):
         if self.valueRatio > 1.0:
             self.valueRatio = 1.0
             
-        rendered = self.font.render(str(self.getValue()), 1, self.getTextColor())
+        rendered = self.font.render(str(self.getValue()).rjust(5, ' '), 1, self.getTextColor())
         
         texture = pygame.image.tostring(rendered, 'RGBA', True)
         
@@ -72,16 +86,15 @@ class DisplayBase(object):
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST )  
 
         aspect = rendered.get_width() * 1.0 / rendered.get_height()
-        freeSpace = self.owningState.game.coordinateSize * (self.owningState.game.aspect - 1.0) - 1.65
+        freeSpace = self.owningState.game.coordinateSize * (self.owningState.game.aspect - 1.0) - 0.75
         
         
         scale = freeSpace / aspect
         if scale < self.hud.scale:
             self.hud.scale = scale
         
-        glTranslatef(self.hud.scale * aspect, -1.0, 0.0)
+        glTranslatef(self.hud.scale * aspect / 2.0, -1.0, 0.0)
         glPushMatrix()
-        glScale(self.hud.scale, self.hud.scale, self.hud.scale)
         draw(aspect, self.hud.scale)
         glPopMatrix()
         

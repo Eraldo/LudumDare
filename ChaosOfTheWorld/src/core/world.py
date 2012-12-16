@@ -5,23 +5,10 @@ Created on 15.12.2012
 '''
 from OpenGL.GL import *#@UnusedWildImport
 from graphic import *#@UnusedWildImport
-import math
 import random
-
-def dotproduct(v1, v2):
-    return sum((a*b) for a, b in zip(v1, v2))
-
-def length(v):
-    return math.sqrt(dotproduct(v, v))
-
-def angle(v1, v2):
-    #return -(math.atan2(v2[1], v2[0]) - math.atan2(v1[1], v1[0])) * 180.0 / math.pi
-    return turnAngle(v1, v2)
-
 
 NORTH, EAST, SOUTH, WEST = (0, 1), (1, 0), (0, -1), (-1, 0)
 DIRECTIONS = [NORTH, EAST, SOUTH, WEST]
-
 
 def turnDirection(direction, turnDirection):
     index = DIRECTIONS.index(direction)
@@ -46,7 +33,7 @@ class World(object):
         
     def draw(self):
         glPushMatrix()
-        glRotate(angle(NORTH, self.player.direction), 0, 0, 1)
+        glRotate(turnAngle(NORTH, self.player.direction), 0, 0, 1)
         
         # key: texture, value: [(posx, posy, Tile)]
         renderLists = {}
@@ -124,7 +111,7 @@ class Tile(object):
     
     def draw(self):
         glPushMatrix()
-        rot = angle(NORTH, self.direction)
+        rot = turnAngle(NORTH, self.direction)
         glRotatef(rot, 0, 0, 1)
         drawQuad()
         glPopMatrix()
