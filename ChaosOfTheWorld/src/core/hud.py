@@ -6,7 +6,7 @@ Created on 15.12.2012
 from OpenGL.GL import *#@UnusedWildImport
 from graphic import *#@UnusedWildImport
 
-#Todo Split update and draw
+#TODO: Split update and draw
 class Hud(object):
     def __init__(self, owningState):
         self.owningState = owningState
@@ -37,8 +37,9 @@ class Inventory(object):
 class TextBox(object):
     def __init__(self, owningState, hud):
         self.text = "This is my test sentence, there are many like it, but this one is mine!"
-        #Todo: Schriftart aendern
-        self.font = pygame.font.Font(None, 18)
+        #TODO: Schriftart aendern
+        font = "../../data/northwoodhigh.ttf"
+        self.font = pygame.font.Font(font, 28)
         self.hud = hud
         self.owningState = owningState
         

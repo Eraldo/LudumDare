@@ -73,7 +73,7 @@ class World(object):
     def load(self):
         import csv
 
-        csv_file_path = "../../data/overworld-1.csv" # TODO: relative | global paths
+        csv_file_path = "../../data/overworld-2.csv" # TODO: relative | global paths
 
         tile_mapping = {
             1: "grass-R",
@@ -96,8 +96,13 @@ class World(object):
                              "E": EAST,
                              "S": SOUTH,
                              "W": WEST,
-                             "R": random.choice(DIRECTIONS) # TODO: Eraldo
                              }
+        
+        def getDirection(letter):
+            if letter in direction_mapping.keys():
+                return direction_mapping[direction_letter]
+            else:
+                return random.choice(DIRECTIONS)
         
         for v in tile_mapping.itervalues():
             name = v.split("-")[0]
@@ -110,7 +115,7 @@ class World(object):
                     if cell:
                         tile_mapping_key = int(cell)
                         type_name, direction_letter = tile_mapping[tile_mapping_key].split("-")
-                        direction = direction_mapping[direction_letter]
+                        direction = getDirection(direction_letter)
                         tile_type = self.tileTypes[type_name]
                         self.tiles[(x, y)] = Tile(direction, tile_type, 0)
                     else:
