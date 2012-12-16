@@ -57,7 +57,7 @@ class StepDisplay(object):
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST )  
 
         aspect = rendered.get_width() * 1.0 / rendered.get_height()
-        glTranslatef(0.5 + aspect / 2.0, -0.5, 0.0)
+        glTranslatef(aspect / 2.0, -0.5, 0.0)
         glPushMatrix()
         glScale(0.5, 0.5, 0.5)
         draw(aspect)
@@ -96,7 +96,7 @@ class BloodDisplay(object):
         glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST )  
 
         aspect = rendered.get_width() * 1.0 / rendered.get_height()
-        glTranslatef(0.5 + aspect / 2.0, -0.5, 0.0)
+        glTranslatef(aspect / 2.0, -0.5, 0.0)
         glPushMatrix()
         glScale(0.5, 0.5, 0.5)
         draw(aspect)

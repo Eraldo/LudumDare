@@ -60,7 +60,7 @@ class BaseGame(object):
             
     def setup(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((1920, 1080), pygame.OPENGL | pygame.HWSURFACE | pygame.DOUBLEBUF, 16)
+        self.screen = pygame.display.set_mode((800, 600), pygame.OPENGL | pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF, 16)
         glClearColor(0.0, 0.0, 0.0, 1.0)
         self.reshape()
         

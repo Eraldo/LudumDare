@@ -14,6 +14,7 @@ def dotproduct(v1, v2):
 def length(v):
     return math.sqrt(dotproduct(v, v))
 
+#TODO Optimize
 def angle(v1, v2):
     return -(math.atan2(v2[1], v2[0]) - math.atan2(v1[1], v1[0])) * 180.0 / math.pi
 
