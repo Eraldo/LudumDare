@@ -23,7 +23,7 @@ def turnAngle(dirFrom, dirTo):
 class World(object):
     INITIAL_MAP_SIZE = 100
     tiles = {}
-    tileTypes = []
+    tileTypes = {}
     
     def __init__(self, player, renderSize):
         self.player = player
@@ -59,18 +59,63 @@ class World(object):
 
         glPopMatrix()
     
+#    def load(self):
+#        self.tileTypes.append(TileType("Grass", [Texture("grass.png")], 1, True))
+#        self.tileTypes.append(TileType("Stone", [Texture("stone.png")], 1, True))
+#        
+#        for x in range(-self.INITIAL_MAP_SIZE, self.INITIAL_MAP_SIZE):
+#            for y in range(-self.INITIAL_MAP_SIZE, self.INITIAL_MAP_SIZE):
+#                tileDirection = random.choice(DIRECTIONS)
+#                tileType = random.choice(self.tileTypes)
+#                tileTexture = random.randint(0, len(tileType.textures))
+#                self.tiles[(x, y)] = Tile(tileDirection, tileType, tileTexture)
+                
     def load(self):
-        self.tileTypes.append(TileType("Grass", [Texture("grass.png")], 1, True))
-        self.tileTypes.append(TileType("Stone", [Texture("stone.png")], 1, True))
+        import csv
+
+        csv_file_path = "../data/overworld-1.csv" # TODO: relative | global paths
+
+        tile_mapping = {
+            1: "grass-N",
+            2: "wood-N",
+            3: "water-N",
+            4: "sand-N",
+            5: "snow-N",
+            6: "ice-N",
+            7: "swamp-N",
+            8: "road-N",
+            12: "stone-N",
+            13: "shelter-W",
+            14: "shelter-E",
+            15: "shelter-N",
+            16: "shelter-S",
+        }
         
-        for x in range(-self.INITIAL_MAP_SIZE, self.INITIAL_MAP_SIZE):
-            for y in range(-self.INITIAL_MAP_SIZE, self.INITIAL_MAP_SIZE):
-                tileDirection = random.choice(DIRECTIONS)
-                tileType = random.choice(self.tileTypes)
-                tileTexture = random.randint(0, len(tileType.textures))
-                self.tiles[(x, y)] = Tile(tileDirection, tileType, tileTexture)
-                
-                
+        direction_mapping = {
+                             "N": NORTH,
+                             "E": EAST,
+                             "S": SOUTH,
+                             "W": WEST,
+                             }
+        
+        for k, v in tile_mapping:
+            name, direction = v.split("-")
+            direction = direction_mapping[direction]
+            self.tileTypes[name] = TileType(name, [Texture(name+".png")], 1, True)
+                 
+        with open(csv_file_path, 'rb') as csvfile:
+            map_data = csv.reader(csvfile, delimiter=',')
+            for y, row in enumerate(map_data):
+                for x, cell in enumerate(row):
+                    if cell:
+                        tile_mapping_key = int(cell)
+                        type_name, direction_letter = tile_mapping[tile_mapping_key].split("-")
+                        direction = direction_mapping[direction_letter]
+                        tile_type = self.tileTypes[type_name]
+                        self.tiles[(x, y)] = Tile(direction, tile_type, 0)
+                    else:
+                        pass # None -> new row
+
                
 class Player(object):
     CRITICAL_BLOODLEVEL = 10
