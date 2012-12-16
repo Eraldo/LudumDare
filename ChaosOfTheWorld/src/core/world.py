@@ -96,12 +96,11 @@ class World(object):
                              "E": EAST,
                              "S": SOUTH,
                              "W": WEST,
-                             "R": random.choice(DIRECTIONS)
+                             "R": random.choice(DIRECTIONS) # TODO: Eraldo
                              }
         
         for v in tile_mapping.itervalues():
-            name, direction = v.split("-")
-            direction = direction_mapping[direction]
+            name = v.split("-")[0]
             self.tileTypes[name] = TileType(name, [Texture(name+".png")], 1, True)
                  
         with open(csv_file_path, 'rb') as csvfile:
