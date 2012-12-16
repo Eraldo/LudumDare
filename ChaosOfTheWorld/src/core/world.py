@@ -76,19 +76,19 @@ class World(object):
         csv_file_path = "../../data/overworld-2.csv" # TODO: relative | global paths
 
         tile_mapping = {
-            1: "grass-R",
-            2: "forest-R",
-            3: "water-R",
-            4: "sand-R",
-            5: "snow-R",
-            6: "ice-R",
-            7: "swamp-R",
-            8: "road-R",
-            12: "stone-R",
-            13: "shelter-W",
-            14: "shelter-E",
-            15: "shelter-N",
-            16: "shelter-S",
+            1: ["grass-R", 1, True],
+            2: ["forest-R", 1, True],
+            3: ["water-R", 1, False],
+            4: ["sand-R", 1, True],
+            5: ["snow-R", 1, True],
+            6: ["ice-R", 1, True],
+            7: ["swamp-R", 1, True],
+            8: ["road-R", 1, True],
+            12: ["stone-R", 1, False],
+            13: ["shelter-W", 0, False],
+            14: ["shelter-E", 0, False],
+            15: ["shelter-N", 0, False],
+            16: ["shelter-S", 0, False],
         }
         
         direction_mapping = {
@@ -105,8 +105,9 @@ class World(object):
                 return random.choice(DIRECTIONS)
         
         for v in tile_mapping.itervalues():
-            name = v.split("-")[0]
-            self.tileTypes[name] = TileType(name, [Texture(name+".png")], 1, True)
+            name, speed, enterable = v
+            name =  name.split("-")[0]
+            self.tileTypes[name] = TileType(name, [Texture(name+".png")], speed, enterable)
                  
         with open(csv_file_path, 'rb') as csvfile:
             map_data = csv.reader(csvfile, delimiter=',')
@@ -114,7 +115,7 @@ class World(object):
                 for x, cell in enumerate(row):
                     if cell:
                         tile_mapping_key = int(cell)
-                        type_name, direction_letter = tile_mapping[tile_mapping_key].split("-")
+                        type_name, direction_letter = tile_mapping[tile_mapping_key][0].split("-")
                         direction = getDirection(direction_letter)
                         tile_type = self.tileTypes[type_name]
                         self.tiles[(x, y)] = Tile(direction, tile_type, 0)
@@ -127,7 +128,7 @@ class Player(object):
     def __init__(self, steps):
         self.direction = random.choice([NORTH, EAST, WEST, SOUTH])
         self.texture = Texture("player.png")
-        self.position = (0, 0)
+        self.position = (40, 60)
         self.steps = steps
         self.bloodPoints = 1
         
