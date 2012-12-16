@@ -14,7 +14,7 @@ def dotproduct(v1, v2):
 def length(v):
     return math.sqrt(dotproduct(v, v))
 
-#TODO Optimize
+#TODO: Optimize
 def angle(v1, v2):
     return -(math.atan2(v2[1], v2[0]) - math.atan2(v1[1], v1[0])) * 180.0 / math.pi
 
@@ -30,6 +30,7 @@ def turnDirection(direction, turnDirection):
     return DIRECTIONS[index]
 
 class World(object):
+    INITIAL_MAP_SIZE = 100
     tiles = {}
     tileTypes = []
     
@@ -43,22 +44,36 @@ class World(object):
         glPushMatrix()
         glRotate(angle(NORTH, self.player.direction), 0, 0, 1)
         
+        # key: texture, value: [(posx, posy, Tile)]
+        renderLists = {}
+        
         for x in range(self.player.position[0] - self.renderSize, self.player.position[0] + self.renderSize + 1):
             for y in range(self.player.position[1] - self.renderSize, self.player.position[1] + self.renderSize + 1):
-                if (x, y) in self.tiles:                      
-                    glPushMatrix()
-                    #TODO: Group per texture
-                    glTranslatef(x - self.player.position[0], y - self.player.position[1], 0.0)
-                    self.tiles[(x, y)].draw()
-                    glPopMatrix()
-        glPopMatrix()      
+                if (x, y) in self.tiles:
+                    xpos = x - self.player.position[0]
+                    ypos = y - self.player.position[1]
+                    tile = self.tiles[(x, y)]
+                    texture = tile.tileType[tile.textureIndex]
+                    if texture not in renderLists:
+                        renderLists[texture] = []
+                    renderLists[texture].append((xpos, ypos, tile))
+                    
+        for texture, renderList in renderLists.iteritems():
+            texture.bind()
+            for (xpos, ypos, tile) in renderList:
+                glPushMatrix()
+                glTranslatef(xpos, ypos, 0.0)
+                tile.draw()
+                glPopMatrix()
+
+        glPopMatrix()
     
     def load(self):
         self.tileTypes.append(TileType("Grass", [Texture("grass.png")], 1, True))
         self.tileTypes.append(TileType("Stone", [Texture("stone.png")], 1, True))
         
-        for x in range(-400, 400):
-            for y in range(-400, 400):
+        for x in range(-self.INITIAL_MAP_SIZE, self.INITIAL_MAP_SIZE):
+            for y in range(-self.INITIAL_MAP_SIZE, self.INITIAL_MAP_SIZE):
                 tileDirection = random.choice(DIRECTIONS)
                 tileType = random.choice(self.tileTypes)
                 tileTexture = random.randint(0, len(tileType.textures))
@@ -103,7 +118,6 @@ class Tile(object):
         self.textureIndex = textureIndex
     
     def draw(self):
-        self.tileType[self.textureIndex].bind()
         glPushMatrix()
         rot = angle((0.0, 1.0), self.direction)
         glRotatef(rot, 0, 0, 1)
