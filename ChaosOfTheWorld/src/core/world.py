@@ -73,11 +73,11 @@ class World(object):
     def load(self):
         import csv
 
-        csv_file_path = "../data/overworld-1.csv" # TODO: relative | global paths
+        csv_file_path = "../../data/overworld-1.csv" # TODO: relative | global paths
 
         tile_mapping = {
             1: "grass-N",
-            2: "wood-N",
+            2: "forest-N",
             3: "water-N",
             4: "sand-N",
             5: "snow-N",
@@ -98,7 +98,7 @@ class World(object):
                              "W": WEST,
                              }
         
-        for k, v in tile_mapping:
+        for v in tile_mapping.itervalues():
             name, direction = v.split("-")
             direction = direction_mapping[direction]
             self.tileTypes[name] = TileType(name, [Texture(name+".png")], 1, True)
