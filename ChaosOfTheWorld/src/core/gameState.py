@@ -149,7 +149,6 @@ class Running(GameState):
         pass
     
     def draw(self):
-        
         glTranslate(-(self.game.aspect - 1.0) * self.game.coordinateSize + 0.5, 0.0, 0.0)
         self.world.draw()
         self.player.draw()

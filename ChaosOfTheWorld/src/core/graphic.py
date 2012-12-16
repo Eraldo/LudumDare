@@ -7,28 +7,30 @@ Created on 16.12.2012
 from OpenGL.GL import *#@UnusedWildImport
 import pygame 
 
-def draw(aspectRatio):
+def draw(aspectRatio, sideLength = 1.0):    
+    halfLength = sideLength / 2.0
     glBegin (GL_QUADS)
     glTexCoord2f (0, 1);
-    glVertex2f(-aspectRatio, 0.5)
+    glVertex2f(-aspectRatio * halfLength, halfLength)
     glTexCoord2f (1, 1)
-    glVertex2f(aspectRatio, 0.5)
+    glVertex2f(aspectRatio * halfLength, halfLength)
     glTexCoord2f (1, 0)
-    glVertex2f(aspectRatio, -0.5)
+    glVertex2f(aspectRatio * halfLength, -halfLength)
     glTexCoord2f (0, 0)
-    glVertex2f(-aspectRatio, -0.5)
+    glVertex2f(-aspectRatio * halfLength, -halfLength)
     glEnd();
 
-def drawQuad():
+def drawQuad(sideLength = 1.0):
+    halfLength = sideLength / 2.0
     glBegin (GL_QUADS)
     glTexCoord2f (0, 1);
-    glVertex2f(-0.5, 0.5)
+    glVertex2f(-halfLength, halfLength)
     glTexCoord2f (1, 1)
-    glVertex2f(0.5, 0.5)
+    glVertex2f(halfLength, halfLength)
     glTexCoord2f (1, 0)
-    glVertex2f(0.5, -0.5)
+    glVertex2f(halfLength, -halfLength)
     glTexCoord2f (0, 0)
-    glVertex2f(-0.5, -0.5)
+    glVertex2f(-halfLength, -halfLength)
     glEnd();
     
     

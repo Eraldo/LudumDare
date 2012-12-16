@@ -67,12 +67,13 @@ class World(object):
                 
                
 class Player(object):
+    CRITICAL_BLOODLEVEL = 10
     def __init__(self, steps):
         self.direction = random.choice([NORTH, EAST, WEST, SOUTH])
         self.texture = Texture("player.png")
         self.position = (0, 0)
         self.steps = steps
-        self.bloodPoints = 20
+        self.bloodPoints = 1
         
     def draw(self):
         self.texture.bind()

@@ -11,7 +11,7 @@ import sys
 
 class BaseGame(object):
     coordinateSize = 16 / 2
-    
+    aspect = 1.0
     run = True
     screen = None
     currentState = None
@@ -60,7 +60,10 @@ class BaseGame(object):
             
     def setup(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((800, 600), pygame.OPENGL | pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF, 16)
+        self.flags = pygame.OPENGL | pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.FULLSCREEN
+        self.modes = pygame.display.list_modes(0, self.flags)
+        
+        self.screen = pygame.display.set_mode(self.modes[len(self.modes) - 1], self.flags ^ pygame.FULLSCREEN)
         glClearColor(0.0, 0.0, 0.0, 1.0)
         self.reshape()
         
