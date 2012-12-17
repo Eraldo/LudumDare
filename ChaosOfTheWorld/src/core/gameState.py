@@ -1,7 +1,7 @@
 '''
 Created on 14.12.2012
 
-@author: bernhard
+@author: bernhard, eraldo
 '''
 from OpenGL.GL import *#@UnusedWildImport
 from graphic import *#@UnusedWildImport
@@ -108,7 +108,7 @@ class MainMenu(GameState):
             drawPos[1] = drawPos[1] - self.game.coordinateSize / 2
             
 class Running(GameState):
-    maxSteps = 255
+    maxSteps = 100
     
     def __init__(self):
         self.player = Player(self.maxSteps)
@@ -119,19 +119,25 @@ class Running(GameState):
         self.game.changeState(MainMenu)
         
     def _playerForward(self):
-        newPosition = tuple(map(operator.add, self.player.position, self.player.direction))
-        if newPosition in self.world.tiles:
-            tile = self.world.tiles[newPosition]
-            if tile.canEnter(self.player):
-                tile.stepOnto(self.player)
-                self.player.position = newPosition
-                self.player.steps = self.player.steps - tile.tileType.speed
+        if self.player.steps > 0:
+            newPosition = tuple(map(operator.add, self.player.position, self.player.direction))
+            if newPosition in self.world.tiles:
+                tile = self.world.tiles[newPosition]
+                if tile.canEnter(self.player):
+                    tile.stepOnto(self.player)
+                    self.player.position = newPosition
+                    self.player.steps -= tile.tileType.speed
+        else:
+            self.player.steps = 0
+            self.hud.textBox.text = "You died a horrible death! ..You colledted %s blood points." % self.player.steps
         
     def _playerTurnLeft(self):
-        self.player.direction = turnDirection(self.player.direction, -1)
+        if self.player.steps > 0:
+            self.player.direction = turnDirection(self.player.direction, -1)
         
     def _playerTurnRight(self):
-        self.player.direction = turnDirection(self.player.direction, 1)
+        if self.player.steps > 0:
+            self.player.direction = turnDirection(self.player.direction, 1)
         
     def setup(self, game):
         super(Running, self).setup(game)

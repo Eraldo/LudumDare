@@ -1,7 +1,7 @@
 '''
 Created on 15.12.2012
 
-@author: bernhard
+@author: bernhard, eraldo
 '''
 from OpenGL.GL import *#@UnusedWildImport
 from graphic import *#@UnusedWildImport
@@ -73,24 +73,6 @@ class World(object):
     def load(self):
         import csv
 
-        csv_file_path = "../../data/overworld-2.csv" # TODO: relative | global paths
-
-        tile_mapping = {
-            1: ["grass-R", 1, True],
-            2: ["forest-R", 1, True],
-            3: ["water-R", 1, False],
-            4: ["sand-R", 1, True],
-            5: ["snow-R", 1, True],
-            6: ["ice-R", 1, True],
-            7: ["swamp-R", 1, True],
-            8: ["road-R", 1, True],
-            12: ["stone-R", 1, False],
-            13: ["shelter-W", 0, False],
-            14: ["shelter-E", 0, False],
-            15: ["shelter-N", 0, False],
-            16: ["shelter-S", 0, False],
-        }
-        
         direction_mapping = {
                              "N": NORTH,
                              "E": EAST,
@@ -104,12 +86,31 @@ class World(object):
             else:
                 return random.choice(DIRECTIONS)
         
+        csv_map_file_path = "../../data/overworld-2.csv" # TODO: relative | global paths
+
+        tile_mapping = {
+            1: ["grass-R", 1, True],
+            2: ["forest-R", 2, True],
+            3: ["water-R", 0, False],
+            4: ["sand-R", 2, True],
+            5: ["snow-R", 2, True],
+            6: ["ice-R", 1, True],
+            7: ["swamp-R", 2, True],
+            8: ["road-R", 1, True],
+            12: ["stone-R", 0, False],
+            13: ["shelter-W", 0, False],
+            14: ["shelter-E", 0, False],
+            15: ["shelter-N", 0, False],
+            16: ["shelter-S", 0, False],
+        }
+        
+        
         for v in tile_mapping.itervalues():
             name, speed, enterable = v
             name =  name.split("-")[0]
             self.tileTypes[name] = TileType(name, [Texture(name+".png")], speed, enterable)
                  
-        with open(csv_file_path, 'rb') as csvfile:
+        with open(csv_map_file_path, 'rb') as csvfile:
             map_data = csv.reader(csvfile, delimiter=',')
             for y, row in enumerate(map_data):
                 for x, cell in enumerate(row):
@@ -122,13 +123,39 @@ class World(object):
                     else:
                         pass # None -> new row
 
+
+        csv_events_file_path = "../../data/overworld-3-events.csv" # TODO: relative | global paths
+
+        from event import DayBreakEvent
+        event_mapping = {
+                        34: ["daybreak-R", DayBreakEvent]
+                        }
+
+        with open(csv_events_file_path, 'rb') as csvfile:
+            events_data = csv.reader(csvfile, delimiter=',')
+            for y, row in enumerate(events_data):
+                for x, cell in enumerate(row):
+                    if cell:
+                        event_mapping_key = int(cell)
+                        if event_mapping_key in event_mapping.keys():
+                            print(x, y, event_mapping_key, event_mapping.keys())
+                            type_name, direction_letter = event_mapping[event_mapping_key][0].split("-")
+                            direction = getDirection(direction_letter)
+                            event_class = event_mapping[event_mapping_key][1]
+                            self.tiles[(x, y)].events.append(event_class()) # TODO: add direction to event creation
+                            print(">> add", self.tiles[(x, y)])
+                            print(self.tiles[(x, y)].events)
+                    else:
+                        pass # None -> new row
+
+
                
 class Player(object):
     CRITICAL_BLOODLEVEL = 10
     def __init__(self, steps):
         self.direction = random.choice([NORTH, EAST, WEST, SOUTH])
         self.texture = Texture("player.png")
-        self.position = (40, 60)
+        self.position = (50, 40)
         self.steps = steps
         self.bloodPoints = 1
         
@@ -153,12 +180,12 @@ class TileType(object):
             return None
     
 class Tile(object):
-    events = []
     
     def __init__(self, direction, tileType, textureIndex):
         self.direction = direction
         self.tileType = tileType
         self.textureIndex = textureIndex
+        self.events = []
     
     def draw(self):
         glPushMatrix()
