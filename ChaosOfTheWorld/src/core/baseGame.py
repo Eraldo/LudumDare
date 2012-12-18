@@ -63,7 +63,10 @@ class BaseGame(object):
         self.flags = pygame.OPENGL | pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.FULLSCREEN
         self.modes = pygame.display.list_modes(0, self.flags)
         
-        self.screen = pygame.display.set_mode(self.modes[0], self.flags)
+        try:
+            self.screen = pygame.display.set_mode(self.modes[0], self.flags)
+        except:
+            self.screen = pygame.display.set_mode(self.modes[0], self.flags ^ pygame.FULLSCREEN)
         glClearColor(0.0, 0.0, 0.0, 1.0)
         self.reshape()
         
