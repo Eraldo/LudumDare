@@ -24,12 +24,15 @@ class DayBreakEvent(Event):
         super(DayBreakEvent, self).__init__(game)
         self.name = "daybreak"
         self.texture = Texture("welcome.png")
+        self.one_shot = False
+        self.consumed = False
 #        self.texture = texture # TODO: define
     
     def trigger(self):
-        self.game.states[gameState.Running].player.bloodPoints += 1
         self.game.states[gameState.Running].player.steps = self.game.states[gameState.Running].maxSteps
         self.game.states[gameState.Running].hud.textBox.text = "You entered a shelter."
+        if not self.consumed:
+            self.game.states[gameState.Running].player.bloodPoints += 1
         # TODO: remove alpha blending
         # TODO: make player invisible
         # TODO: display notification of shelter

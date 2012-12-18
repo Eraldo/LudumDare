@@ -191,5 +191,7 @@ class Tile(object):
     def stepOnto(self, game):
         for event in self.events:
             event.trigger()
-        self.events = []
+            if event.one_shot:
+                del event
+#        self.events = []
     
