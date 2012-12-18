@@ -11,6 +11,7 @@ class Hud(object):
     def __init__(self, owningState):
         self.owningState = owningState
         self.stepDisplay = StepDisplay(owningState, self)
+        self.dayDisplay = DayDisplay(owningState, self)
         self.bloodPointDisplay = BloodDisplay(owningState, self)
         self.textBox = TextBox(owningState, self)
         self.inventory = Inventory(owningState, self)
@@ -20,6 +21,7 @@ class Hud(object):
         glPushMatrix()
         glTranslatef(0.5, self.owningState.game.coordinateSize - 0.5, 0.0)
         self.stepDisplay.draw()
+        self.dayDisplay.draw()
         self.bloodPointDisplay.draw()
         self.textBox.draw()
         glPopMatrix()
@@ -69,7 +71,7 @@ class TextBox(object):
         glPopMatrix()
 
 class DisplayBase(object):
-    def __init__(self, owningState, hud,icon_file):
+    def __init__(self, owningState, hud, icon_file):
         self.owningState = owningState
         self.font = pygame.font.Font(None, 36)
         self.icon = Texture(icon_file)
@@ -113,10 +115,11 @@ class DisplayBase(object):
         self.drawText()
         glPopMatrix()
         glTranslatef(0.0, -2.0, 0.0)
+        
 
 class StepDisplay(DisplayBase):
     def __init__(self, owningState, hud):
-        super(StepDisplay, self).__init__(owningState, hud, "step_icon.png")
+        super(StepDisplay, self).__init__(owningState, hud, "steps_icon.png")
     
     def getValue(self):
         return self.owningState.player.steps
@@ -128,6 +131,28 @@ class StepDisplay(DisplayBase):
         return (255 * (1 - self.valueRatio), 255 * self.valueRatio, 0)
     
     
+class DayDisplay(DisplayBase):
+    def __init__(self, owningState, hud):
+        self.icon_day = Texture("day_icon.png")
+        self.icon_night = Texture("night_icon.png")
+        super(DayDisplay, self).__init__(owningState, hud, "days_icon.png")
+        self.switch_icon()
+    
+    def getValue(self):
+        return self.owningState.player.days
+    
+    def getMaxValue(self):
+        return self.owningState.maxDays
+    
+    def switch_icon(self):
+        if self.icon == self.icon_night:
+            self.icon = self.icon_day
+        else:
+            self.icon = self.icon_night 
+        
+    
+    def getTextColor(self):
+        return (255 * (1 - self.valueRatio), 255 * self.valueRatio, 0)    
     
 
         

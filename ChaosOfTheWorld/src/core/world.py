@@ -34,10 +34,13 @@ class World(object):
         self.load()
         
     def init_shaders(self):
+        self.shader_min = 0
+        self.shader_max = 8
         self.default_shader = 2
         self.shader = self.default_shader
         for n in range(9):
             self.shaders.append(Texture("shaders/shader%s.png" % n))
+        self.shader_modifiers = []
         
     def draw(self):
         glPushMatrix()
@@ -66,6 +69,14 @@ class World(object):
                 glPopMatrix()
         
         # shader
+        #self.shader = self.default_shader
+        for mod in self.shader_modifiers:
+            self.shader += mod
+        if self.shader < self.shader_min:
+            self.shader = self.shader_min
+        if self.shader > self.shader_max:
+            self.shader = self.shader_max
+        self.shader_modifiers = []
         self.shaders[self.shader].bind()
         drawQuad(sideLength=17)
         
@@ -157,6 +168,8 @@ class Player(object):
         self.position = (50, 40)
         self.steps = steps
         self.bloodPoints = 1
+        self.days = 0
+        self.in_shelter = False
         
     def draw(self):
         self.texture.bind()

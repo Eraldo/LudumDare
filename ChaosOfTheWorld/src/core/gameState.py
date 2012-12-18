@@ -110,6 +110,7 @@ class MainMenu(GameState):
             
 class Running(GameState):
     maxSteps = 100
+    maxDays = 100
     
     def __init__(self):
         self.player = Player(self.maxSteps)
@@ -120,6 +121,9 @@ class Running(GameState):
         self.game.changeState(MainMenu)
         
     def _playerForward(self):
+        if self.player.in_shelter:
+            self.player.in_shelter = False
+            self.hud.dayDisplay.switch_icon()
         if self.player.steps > 0:
             newPosition = tuple(map(operator.add, self.player.position, self.player.direction))
             if newPosition in self.world.tiles:
@@ -129,17 +133,17 @@ class Running(GameState):
                     self.player.steps -= tile.tileType.speed
                     tile.stepOnto(self.game)
             tile_type_name = self.world.tiles[newPosition].tileType.name
+            self.world.shader = self.world.default_shader
             if tile_type_name == "ice":
                 self._playerForward()
             elif tile_type_name == "forest":
                 self.world.shader = 1
-            elif tile_type_name == "shelter":
-                self.world.shader = 8
             else:
-                self.world.shader = self.world.default_shader 
+                pass
                 
         else:
             self.player.steps = 0
+            self.world.shader_modifier = []
             self.world.shader = 0
             self.hud.textBox.text = "You died a horrible death! ..You collected %s blood points." % self.player.bloodPoints
         
