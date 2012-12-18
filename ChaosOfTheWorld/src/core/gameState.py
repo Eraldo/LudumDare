@@ -129,7 +129,7 @@ class Running(GameState):
                     self.player.steps -= tile.tileType.speed
         else:
             self.player.steps = 0
-            self.hud.textBox.text = "You died a horrible death! ..You colledted %s blood points." % self.player.steps
+            self.hud.textBox.text = "You died a horrible death! ..You colledted %s blood points." % self.player.bloodPoints
         
     def _playerTurnLeft(self):
         if self.player.steps > 0:
