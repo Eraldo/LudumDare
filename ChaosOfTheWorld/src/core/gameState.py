@@ -125,9 +125,9 @@ class Running(GameState):
             if newPosition in self.world.tiles:
                 tile = self.world.tiles[newPosition]
                 if tile.canEnter(self.player):
-                    tile.stepOnto(self.game)
                     self.player.position = newPosition
                     self.player.steps -= tile.tileType.speed
+                    tile.stepOnto(self.game)
         else:
             self.player.steps = 0
             self.hud.textBox.text = "You died a horrible death! ..You collected %s blood points." % self.player.bloodPoints
