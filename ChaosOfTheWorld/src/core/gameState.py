@@ -95,9 +95,16 @@ class MainMenu(GameState):
         game.keyUp[pygame.K_UP] = self._up
         game.keyUp[pygame.K_DOWN] = self._down
         game.keyUp[pygame.K_ESCAPE] = self._escape
-        self.options =  [MenuEntry("Start", self.game.changeState, [Running]), 
+        self.options =  [MenuEntry("New Game", self.game.changeState, [Running]), 
                          MenuEntry("Options"),
                          MenuEntry("Exit", sys.exit)]
+        if self.game.states[gameState.Running].initialized:
+            self.options[0].text = "Continue" 
+            self.options.insert(1, MenuEntry("New Game", self.restart, []))
+            
+    def restart(self):
+        self.game.states[gameState.Running] = gameState.Running()
+        self.game.changeState(Running)
         
     def update(self):
         pass
@@ -106,7 +113,7 @@ class MainMenu(GameState):
         drawPos = [0, self.game.coordinateSize / 2]
         for number, option in enumerate(self.options):
             option.draw(self.game.screen, drawPos, number != self.selection)
-            drawPos[1] = drawPos[1] - self.game.coordinateSize / 2
+            drawPos[1] = drawPos[1] - self.game.coordinateSize / 4
             
 class Running(GameState):
     steps_max = 100
@@ -123,6 +130,7 @@ class Running(GameState):
     def _playerForward(self):
         if self.player.in_shelter:
             self.player.in_shelter = False
+            self.player.unhide()
             self.hud.dayDisplay.switch_icon()
         if self.player.is_alife():
             newPosition = tuple(map(operator.add, self.player.position, self.player.direction))
@@ -145,7 +153,7 @@ class Running(GameState):
             self.player.die()
             self.world.shader_modifier = []
             self.world.shader = 0
-            self.hud.textBox.text = "You died a horrible death! ..You survived %s days and collected %s blood points." % (self.player.days, self.player.bloodPoints)
+            self.hud.textBox.text = "You died a horrible death! ..You survived %s days and collected %s blood points." % (self.player.days, self.player.collected_blood)
         
     def _playerTurnLeft(self):
         if self.player.is_alife():
@@ -215,10 +223,7 @@ class Running(GameState):
         if not self.initialized:
             self.world = World(self.game, game.coordinateSize)
             self.hud = Hud(self)            
-            self.initialized = True
-            
-            
-            
+            self.initialized = True   
         
     def update(self):
         pass
