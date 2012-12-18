@@ -7,6 +7,7 @@ from OpenGL.GL import *#@UnusedWildImport
 from graphic import *#@UnusedWildImport
 from world import *#@UnusedWildImport
 from hud import *#@UnusedWildImport
+from ctypes import *
 import operator
 import sys
 
@@ -138,6 +139,51 @@ class Running(GameState):
     def _playerTurnRight(self):
         if self.player.steps > 0:
             self.player.direction = turnDirection(self.player.direction, 1)
+            
+    def compile_shader(self, source, shader_type):
+        shader = glCreateShader(shader_type)
+        source = c_char_p(source)
+        length = c_int(-1)
+        glShaderSource(shader, 1, byref(source), byref(length))
+        glCompileShader(shader)
+        
+        status = c_int()
+        glGetShaderiv(shader, GL_COMPILE_STATUS, byref(status))
+        if not status.value:
+            self.print_log(shader)
+            glDeleteShader(shader)
+            raise ValueError, 'Shader compilation failed'
+        return shader
+ 
+    def compile_program(self, vertex_source, fragment_source):
+        vertex_shader = None
+        fragment_shader = None
+        program = glCreateProgram()
+     
+        if vertex_source:
+            vertex_shader = self.compile_shader(vertex_source, GL_VERTEX_SHADER)
+            glAttachShader(program, vertex_shader)
+        if fragment_source:
+            fragment_shader = self.compile_shader(fragment_source, GL_FRAGMENT_SHADER)
+            glAttachShader(program, fragment_shader)
+     
+        glLinkProgram(program)
+     
+        if vertex_shader:
+            glDeleteShader(vertex_shader)
+        if fragment_shader:
+            glDeleteShader(fragment_shader)
+     
+        return program
+                
+    def print_log(self, shader):
+        length = c_int()
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, byref(length))
+     
+        if length.value > 0:
+            log = create_string_buffer(length.value)
+            glGetShaderInfoLog(shader, length, byref(length), log)
+            print >> sys.stderr, log.value 
         
     def setup(self, game):
         super(Running, self).setup(game)
@@ -146,10 +192,12 @@ class Running(GameState):
         game.keyUp[pygame.K_LEFT] = self._playerTurnLeft
         game.keyUp[pygame.K_RIGHT] = self._playerTurnRight
         if not self.initialized:
-            
             self.world = World(self.game, game.coordinateSize)
             self.hud = Hud(self)            
             self.initialized = True
+            
+            
+            
         
     def update(self):
         pass

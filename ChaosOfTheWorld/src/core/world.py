@@ -180,7 +180,11 @@ class Tile(object):
         glRotatef(rot, 0, 0, 1)
         drawQuad()
         glPopMatrix()
-    
+        glPushMatrix()
+        for event in self.events:
+            event.draw()
+        glPopMatrix()
+        
     def canEnter(self, entity):
         return self.tileType.enterable
     
