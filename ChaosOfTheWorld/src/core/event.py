@@ -25,7 +25,7 @@ class DayBreakEvent(Event):
     
     def trigger(self, game):
         game.states[gameState.Running].player.bloodPoints += 1
-        game.states[gameState.Running].player.steps += 100
+        game.states[gameState.Running].player.steps = game.states[gameState.Running].maxSteps
         # TODO: remove alpha blending
         # TODO: make player invisible
         # TODO: display notification of shelter
