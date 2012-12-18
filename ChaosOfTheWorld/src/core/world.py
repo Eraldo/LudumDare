@@ -131,7 +131,7 @@ class World(object):
                             type_name, direction_letter = event_mapping[event_mapping_key][0].split("-")
                             direction = getDirection(direction_letter)
                             event_class = event_mapping[event_mapping_key][1]
-                            self.tiles[(x, y)].events.append(event_class()) # TODO: add direction to event creation
+                            self.tiles[(x, y)].events.append(event_class(self.game)) # TODO: add direction to event creation
                     else:
                         pass # None -> new row
 
@@ -186,6 +186,6 @@ class Tile(object):
     
     def stepOnto(self, game):
         for event in self.events:
-            event.trigger(game)
+            event.trigger()
         self.events = []
     
