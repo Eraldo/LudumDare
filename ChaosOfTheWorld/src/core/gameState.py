@@ -141,13 +141,14 @@ class Running(GameState):
                     self.player.steps -= tile.tileType.speed
                     tile.stepOnto(self.game)
             tile_type_name = self.world.tiles[newPosition].tileType.name
-            self.world.shader = self.world.default_shader
             if tile_type_name == "ice":
                 self._playerForward()
             elif tile_type_name == "forest":
-                self.world.shader = 0
+                self.world.shader_modifiers.append([-1, 1])
             else:
                 pass
+            
+            self.world.updateShader()
                 
         else: # died
             self.player.die()

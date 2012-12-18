@@ -1,7 +1,7 @@
 '''
 Created on 15.12.2012
 
-@author: bernhard
+@author: bernhard, eraldo
 '''
 import gameState
 from graphic import *
@@ -36,7 +36,7 @@ class DayBreakEvent(Event):
         game.player.hide()
         game.player.steps = self.game.states[gameState.Running].steps_max
         game.hud.textBox.text = "You entered a shelter."
-        game.world.shader_modifiers.append(+8)
+        game.world.shader_modifiers.append([+10, 1])
         game.player.days += 1
         game.hud.dayDisplay.switch_icon()
         if game.player.days % 4 == 0: # every 4 days

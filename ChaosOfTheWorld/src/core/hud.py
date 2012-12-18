@@ -1,8 +1,9 @@
 '''
 Created on 15.12.2012
 
-@author: bernhard
+@author: bernhard, eraldo
 '''
+
 from OpenGL.GL import *#@UnusedWildImport
 from graphic import *#@UnusedWildImport
 

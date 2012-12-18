@@ -1,7 +1,7 @@
 '''
 Created on 16.12.2012
 
-@author: bernhard
+@author: bernhard, eraldo
 '''
 
 from OpenGL.GL import *#@UnusedWildImport

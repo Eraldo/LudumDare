@@ -1,7 +1,7 @@
 '''
 Created on 14.12.2012
 
-@author: bernhard
+@author: bernhard, eraldo
 '''
 
 import pygame
