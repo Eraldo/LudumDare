@@ -6,6 +6,8 @@ Created on 15.12.2012
 from OpenGL.GL import *#@UnusedWildImport
 from graphic import *#@UnusedWildImport
 
+data_path = os.path.join("..", "..", "data")
+
 #TODO: Split update and draw
 class Hud(object):
     def __init__(self, owningState):
@@ -38,8 +40,18 @@ class Inventory(object):
 
 class TextBox(object):
     def __init__(self, owningState, hud):
-        self.text = "Luckily.. it is night.. you should try to find shelters before day breaks!"
-        font = "../../data/northwoodhigh.ttf" # TODO: change to relative path
+        self.text = """
+        It is night.. 
+        You feel dizzy..
+        You should try to find shelters before day breaks!
+        Controlls:
+        UP: move forward
+        RIGHT: turn right 
+        LEFT: turn left
+        DOWN: turn around
+        ESC: Menu
+        """
+        font = os.path.join(data_path, "northwoodhigh.ttf")
         self.font = pygame.font.Font(font, 28)
         self.hud = hud
         self.owningState = owningState

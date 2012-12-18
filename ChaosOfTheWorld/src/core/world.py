@@ -8,6 +8,8 @@ from graphic import *#@UnusedWildImport
 import random
 import gameState
 
+data_path = os.path.join("..", "..", "data")
+
 NORTH, EAST, SOUTH, WEST = (0, 1), (1, 0), (0, -1), (-1, 0)
 DIRECTIONS = [NORTH, EAST, SOUTH, WEST]
 
@@ -39,7 +41,7 @@ class World(object):
         self.default_shader = 1
         self.shader = self.default_shader
         for n in range(9):
-            self.shaders.append(Texture("shaders/shader%s.png" % n))
+            self.shaders.append(Texture(os.path.join("shaders", "shader%s.png" % n)))
         self.shader_modifiers = []
         
     def draw(self):
@@ -99,7 +101,7 @@ class World(object):
             else:
                 return random.choice(DIRECTIONS)
         
-        csv_map_file_path = "../../data/overworld-2.csv" # TODO: relative | global paths
+        csv_map_file_path = os.path.join(data_path, "overworld-2.csv")
 
         tile_mapping = { # name-direction, speed, enterable
             1: ["grass-R", 1, True],
@@ -137,7 +139,7 @@ class World(object):
                         pass # None -> new row
 
 
-        csv_events_file_path = "../../data/overworld-3-events.csv" # TODO: relative | global paths
+        csv_events_file_path = os.path.join(data_path, "overworld-3-events.csv")
 
         from event import DayBreakEvent
         event_mapping = {
@@ -174,6 +176,7 @@ class Player(object):
         self.in_shelter = False
         self._alife = True
         self._hidden = False
+        items = []
             
     def draw(self):
         if not self._hidden:

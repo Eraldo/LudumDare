@@ -29,7 +29,6 @@ class DayBreakEvent(Event):
         self.one_shot = False
         self.consumed = False
         self.victims = randint(1,4)
-#        self.texture = texture # TODO: define
     
     def trigger(self):
         game = self.game.states[gameState.Running]

@@ -7,7 +7,7 @@ Created on 14.12.2012
 import pygame
 import gameState
 from OpenGL.GL import *#@UnusedWildImport
-import sys
+import sys, os
 
 class BaseGame(object):
     coordinateSize = 16 / 2
@@ -15,6 +15,7 @@ class BaseGame(object):
     run = True
     screen = None
     currentState = None
+    data_path = os.path.join("..", "..", "data")
     
     states = {gameState.MainMenu: gameState.MainMenu(),
               gameState.Running: gameState.Running()}

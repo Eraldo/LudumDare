@@ -5,7 +5,11 @@ Created on 16.12.2012
 '''
 
 from OpenGL.GL import *#@UnusedWildImport
-import pygame 
+import pygame
+import os
+from baseGame import *
+
+data_path = os.path.join("..", "..", "data")
 
 def draw(aspectRatio, sideLength = 1.0):    
     halfLength = sideLength / 2.0
@@ -41,7 +45,7 @@ class Texture(object):
         self.loadImage(image)
     
     def loadImage(self, image):
-        textureSurface = pygame.image.load("../../data/" + image)
+        textureSurface = pygame.image.load(os.path.join(data_path, image))
         self.textureData = pygame.image.tostring(textureSurface, "RGBA", 1)
         self.width = textureSurface.get_width()
         self.height = textureSurface.get_height()
