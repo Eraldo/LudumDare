@@ -65,7 +65,7 @@ class BaseGame(object):
         
         try:
             self.screen = pygame.display.set_mode(self.modes[0], self.flags)
-        except:
+        except:  # osx fullscreen fix
             self.screen = pygame.display.set_mode(self.modes[0], self.flags ^ pygame.FULLSCREEN)
         glClearColor(0.0, 0.0, 0.0, 1.0)
         self.reshape()
