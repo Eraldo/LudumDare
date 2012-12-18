@@ -35,6 +35,8 @@ def drawQuad(sideLength = 1.0):
     
     
 class Texture(object):
+    currentTexture = None;
+    
     def __init__(self, image):
         self.loadImage(image)
     
@@ -49,3 +51,4 @@ class Texture(object):
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, self.width, self.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, self.textureData)
+        Texture.currentTexture = self
