@@ -34,7 +34,7 @@ class DayBreakEvent(Event):
         if not self.consumed:
             self.consumed = True
             self.game.states[gameState.Running].player.bloodPoints += 1
-            self.game.states[gameState.Running].hud.textBox.text += "\nLucky you.. you found some innocent victims."
+            self.game.states[gameState.Running].hud.textBox.text += " Lucky you.. you found some innocent victims."
         # TODO: remove alpha blending
         # TODO: make player invisible
         # TODO: display notification of shelter
