@@ -36,5 +36,7 @@ class DayBreakEvent(Event):
         # TODO: increase the bloodpoints
     
     def draw(self):
+        oldTexture = Texture.currentTexture
         self.texture.bind()
         drawQuad()
+        oldTexture.bind()
