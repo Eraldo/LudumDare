@@ -168,24 +168,40 @@ class Player(object):
         self.position = (50, 40)
         self.steps = steps_max
         self.bloodPoints = 1
+        self.collected_blood = 0 
         self.days = 0
         self.days_max =  days_max
         self.in_shelter = False
-        self.alife = True
+        self._alife = True
+        self._hidden = False
             
     def draw(self):
-        self.texture.bind()
-        drawQuad()
+        if not self._hidden:
+            self.texture.bind()
+            drawQuad()
         
     def is_alife(self):
         if self.steps < 0 or self.bloodPoints < 0 or self.days > self.days_max:
-            self.alife = False
+            self._alife = False
             if self.steps < 0:
                 self.steps = 0
-        return self.alife
+        return self._alife
+    
+    def hide(self):
+        self._hidden = True
+    
+    def unhide(self):
+        self._hidden = False
+
+    def feed(self, victims):
+        self.collected_blood += victims
+        self.bloodPoints += victims
+    
+    def exhaust(self):
+        self.bloodPoints -= 1
 
     def die(self):
-        self.alife = False
+        self._alife = False
         
     
 class TileType(object):   
