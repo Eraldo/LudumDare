@@ -128,8 +128,17 @@ class Running(GameState):
                     self.player.position = newPosition
                     self.player.steps -= tile.tileType.speed
                     tile.stepOnto(self.game)
+            tile_type_name = self.world.tiles[newPosition].tileType.name
+            if tile_type_name == "ice":
+                self._playerForward()
+            elif tile_type_name == "forest":
+                self.world.shader = 1
+            else:
+                self.world.shader = self.world.default_shader 
+                
         else:
             self.player.steps = 0
+            self.world.shader = 0
             self.hud.textBox.text = "You died a horrible death! ..You collected %s blood points." % self.player.bloodPoints
         
     def _playerTurnLeft(self):
@@ -139,6 +148,11 @@ class Running(GameState):
     def _playerTurnRight(self):
         if self.player.steps > 0:
             self.player.direction = turnDirection(self.player.direction, 1)
+            
+    def _playerBackward(self):
+        if self.player.steps > 0:
+            self._playerTurnLeft()
+            self._playerTurnLeft()        
             
     def compile_shader(self, source, shader_type):
         shader = glCreateShader(shader_type)
@@ -189,6 +203,7 @@ class Running(GameState):
         super(Running, self).setup(game)
         game.keyUp[pygame.K_ESCAPE] = self._menu
         game.keyUp[pygame.K_UP] = self._playerForward
+        game.keyUp[pygame.K_DOWN] = self._playerBackward
         game.keyUp[pygame.K_LEFT] = self._playerTurnLeft
         game.keyUp[pygame.K_RIGHT] = self._playerTurnRight
         if not self.initialized:

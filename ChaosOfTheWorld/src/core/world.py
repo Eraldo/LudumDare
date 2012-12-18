@@ -25,12 +25,19 @@ class World(object):
     INITIAL_MAP_SIZE = 100
     tiles = {}
     tileTypes = {}
+    shaders = []
     
     def __init__(self, game, renderSize):
         self.game = game
         self.renderSize = renderSize
+        self.init_shaders()
         self.load()
         
+    def init_shaders(self):
+        self.default_shader = 2
+        self.shader = self.default_shader
+        for n in range(8):
+            self.shaders.append(Texture("shaders/shader%s.png" % n))
         
     def draw(self):
         glPushMatrix()
@@ -57,6 +64,11 @@ class World(object):
                 glTranslatef(xpos, ypos, 0.0)
                 tile.draw()
                 glPopMatrix()
+        
+        # shader
+        self.shaders[self.shader].bind()
+        drawQuad(sideLength=17)
+        
 
         glPopMatrix()
                 
@@ -78,7 +90,7 @@ class World(object):
         
         csv_map_file_path = "../../data/overworld-2.csv" # TODO: relative | global paths
 
-        tile_mapping = {
+        tile_mapping = { # name-direction, speed, enterable
             1: ["grass-R", 1, True],
             2: ["forest-R", 1, True],
             3: ["water-R", 0, False],
