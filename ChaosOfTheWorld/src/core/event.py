@@ -3,6 +3,7 @@ Created on 15.12.2012
 
 @author: bernhard
 '''
+import gameState
 
 class Event(object):
     def __init__(self):
@@ -10,7 +11,7 @@ class Event(object):
         self.texture = None
         self.one_shot = True
     
-    def trigger(self, player):
+    def trigger(self, game):
         pass
     
     def draw(self):
@@ -22,9 +23,9 @@ class DayBreakEvent(Event):
         self.name = "daybreak"
 #        self.texture = texture # TODO: define
     
-    def trigger(self, player):
-        player.bloodPoints += 1
-        player.steps += 100
+    def trigger(self, game):
+        game.states[gameState.Running].player.bloodPoints += 1
+        game.states[gameState.Running].player.steps += 100
         # TODO: remove alpha blending
         # TODO: make player invisible
         # TODO: display notification of shelter

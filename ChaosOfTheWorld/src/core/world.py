@@ -6,6 +6,7 @@ Created on 15.12.2012
 from OpenGL.GL import *#@UnusedWildImport
 from graphic import *#@UnusedWildImport
 import random
+import gameState
 
 NORTH, EAST, SOUTH, WEST = (0, 1), (1, 0), (0, -1), (-1, 0)
 DIRECTIONS = [NORTH, EAST, SOUTH, WEST]
@@ -25,24 +26,24 @@ class World(object):
     tiles = {}
     tileTypes = {}
     
-    def __init__(self, player, renderSize):
-        self.player = player
+    def __init__(self, game, renderSize):
+        self.game = game
         self.renderSize = renderSize
         self.load()
         
         
     def draw(self):
         glPushMatrix()
-        glRotate(turnAngle(NORTH, self.player.direction), 0, 0, 1)
+        glRotate(turnAngle(NORTH, self.game.states[gameState.Running].player.direction), 0, 0, 1)
         
         # key: texture, value: [(posx, posy, Tile)]
         renderLists = {}
         
-        for x in range(self.player.position[0] - self.renderSize, self.player.position[0] + self.renderSize + 1):
-            for y in range(self.player.position[1] - self.renderSize, self.player.position[1] + self.renderSize + 1):
+        for x in range(self.game.states[gameState.Running].player.position[0] - self.renderSize, self.game.states[gameState.Running].player.position[0] + self.renderSize + 1):
+            for y in range(self.game.states[gameState.Running].player.position[1] - self.renderSize, self.game.states[gameState.Running].player.position[1] + self.renderSize + 1):
                 if (x, y) in self.tiles:
-                    xpos = x - self.player.position[0]
-                    ypos = y - self.player.position[1]
+                    xpos = x - self.game.states[gameState.Running].player.position[0]
+                    ypos = y - self.game.states[gameState.Running].player.position[1]
                     tile = self.tiles[(x, y)]
                     texture = tile.tileType[tile.textureIndex]
                     if texture not in renderLists:
@@ -183,8 +184,8 @@ class Tile(object):
     def canEnter(self, entity):
         return self.tileType.enterable
     
-    def stepOnto(self, player):
+    def stepOnto(self, game):
         for event in self.events:
-            event.trigger(player)
+            event.trigger(game)
         self.events = []
     

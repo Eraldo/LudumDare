@@ -124,7 +124,7 @@ class Running(GameState):
             if newPosition in self.world.tiles:
                 tile = self.world.tiles[newPosition]
                 if tile.canEnter(self.player):
-                    tile.stepOnto(self.player)
+                    tile.stepOnto(self.game)
                     self.player.position = newPosition
                     self.player.steps -= tile.tileType.speed
         else:
@@ -147,7 +147,7 @@ class Running(GameState):
         game.keyUp[pygame.K_RIGHT] = self._playerTurnRight
         if not self.initialized:
             
-            self.world = World(self.player, game.coordinateSize)
+            self.world = World(self.game, game.coordinateSize)
             self.hud = Hud(self)            
             self.initialized = True
         
