@@ -58,17 +58,6 @@ class World(object):
                 glPopMatrix()
 
         glPopMatrix()
-    
-#    def load(self):
-#        self.tileTypes.append(TileType("Grass", [Texture("grass.png")], 1, True))
-#        self.tileTypes.append(TileType("Stone", [Texture("stone.png")], 1, True))
-#        
-#        for x in range(-self.INITIAL_MAP_SIZE, self.INITIAL_MAP_SIZE):
-#            for y in range(-self.INITIAL_MAP_SIZE, self.INITIAL_MAP_SIZE):
-#                tileDirection = random.choice(DIRECTIONS)
-#                tileType = random.choice(self.tileTypes)
-#                tileTexture = random.randint(0, len(tileType.textures))
-#                self.tiles[(x, y)] = Tile(tileDirection, tileType, tileTexture)
                 
     def load(self):
         import csv
@@ -138,13 +127,10 @@ class World(object):
                     if cell:
                         event_mapping_key = int(cell)
                         if event_mapping_key in event_mapping.keys():
-                            print(x, y, event_mapping_key, event_mapping.keys())
                             type_name, direction_letter = event_mapping[event_mapping_key][0].split("-")
                             direction = getDirection(direction_letter)
                             event_class = event_mapping[event_mapping_key][1]
                             self.tiles[(x, y)].events.append(event_class()) # TODO: add direction to event creation
-                            print(">> add", self.tiles[(x, y)])
-                            print(self.tiles[(x, y)].events)
                     else:
                         pass # None -> new row
 
