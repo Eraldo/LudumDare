@@ -79,12 +79,12 @@ class World(object):
 
         tile_mapping = {
             1: ["grass-R", 1, True],
-            2: ["forest-R", 2, True],
+            2: ["forest-R", 1, True],
             3: ["water-R", 0, False],
             4: ["sand-R", 2, True],
             5: ["snow-R", 2, True],
             6: ["ice-R", 1, True],
-            7: ["swamp-R", 2, True],
+            7: ["swamp-R", 3, True],
             8: ["road-R", 1, True],
             12: ["stone-R", 0, False],
             13: ["shelter-W", 0, False],
