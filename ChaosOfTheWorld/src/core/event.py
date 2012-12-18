@@ -29,6 +29,7 @@ class DayBreakEvent(Event):
     def trigger(self):
         self.game.states[gameState.Running].player.bloodPoints += 1
         self.game.states[gameState.Running].player.steps = self.game.states[gameState.Running].maxSteps
+        self.game.states[gameState.Running].hud.textBox.text = "You entered a shelter."
         # TODO: remove alpha blending
         # TODO: make player invisible
         # TODO: display notification of shelter
