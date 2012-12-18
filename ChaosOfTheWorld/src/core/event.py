@@ -30,7 +30,7 @@ class DayBreakEvent(Event):
     
     def trigger(self):
         self.game.states[gameState.Running].player.in_shelter = True
-        self.game.states[gameState.Running].player.steps = self.game.states[gameState.Running].maxSteps
+        self.game.states[gameState.Running].player.steps = self.game.states[gameState.Running].steps_max
         self.game.states[gameState.Running].hud.textBox.text = "You entered a shelter."
         self.game.states[gameState.Running].world.shader_modifiers.append(+8)
         self.game.states[gameState.Running].player.days += 1

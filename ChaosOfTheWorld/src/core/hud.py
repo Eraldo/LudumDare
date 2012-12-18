@@ -125,7 +125,7 @@ class StepDisplay(DisplayBase):
         return self.owningState.player.steps
     
     def getMaxValue(self):
-        return self.owningState.maxSteps
+        return self.owningState.steps_max
     
     def getTextColor(self):
         return (255 * (1 - self.valueRatio), 255 * self.valueRatio, 0)
@@ -142,19 +142,17 @@ class DayDisplay(DisplayBase):
         return self.owningState.player.days
     
     def getMaxValue(self):
-        return self.owningState.maxDays
+        return self.owningState.days_max
+            
+    def getTextColor(self):
+        return (255 * self.valueRatio, 255 * (1 - self.valueRatio), 0)
     
     def switch_icon(self):
         if self.icon == self.icon_night:
             self.icon = self.icon_day
         else:
-            self.icon = self.icon_night 
-        
+            self.icon = self.icon_night     
     
-    def getTextColor(self):
-        return (255 * (1 - self.valueRatio), 255 * self.valueRatio, 0)    
-    
-
         
 class BloodDisplay(DisplayBase):
     def __init__(self, owningState, hud):

@@ -36,7 +36,7 @@ class World(object):
     def init_shaders(self):
         self.shader_min = 0
         self.shader_max = 8
-        self.default_shader = 2
+        self.default_shader = 1
         self.shader = self.default_shader
         for n in range(9):
             self.shaders.append(Texture("shaders/shader%s.png" % n))
@@ -162,18 +162,31 @@ class World(object):
                
 class Player(object):
     CRITICAL_BLOODLEVEL = 10
-    def __init__(self, steps):
+    def __init__(self, steps_max, days_max):
         self.direction = random.choice([NORTH, EAST, WEST, SOUTH])
         self.texture = Texture("player.png")
         self.position = (50, 40)
-        self.steps = steps
+        self.steps = steps_max
         self.bloodPoints = 1
         self.days = 0
+        self.days_max =  days_max
         self.in_shelter = False
-        
+        self.alife = True
+            
     def draw(self):
         self.texture.bind()
         drawQuad()
+        
+    def is_alife(self):
+        if self.steps < 0 or self.bloodPoints < 0 or self.days > self.days_max:
+            self.alife = False
+            if self.steps < 0:
+                self.steps = 0
+        return self.alife
+
+    def die(self):
+        self.alife = False
+        
     
 class TileType(object):   
     

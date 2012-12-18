@@ -109,11 +109,11 @@ class MainMenu(GameState):
             drawPos[1] = drawPos[1] - self.game.coordinateSize / 2
             
 class Running(GameState):
-    maxSteps = 100
-    maxDays = 100
+    steps_max = 100
+    days_max = 100
     
     def __init__(self):
-        self.player = Player(self.maxSteps)
+        self.player = Player(self.steps_max, self.days_max)
         self.world = None
         self.initialized = False
 
@@ -124,7 +124,7 @@ class Running(GameState):
         if self.player.in_shelter:
             self.player.in_shelter = False
             self.hud.dayDisplay.switch_icon()
-        if self.player.steps > 0:
+        if self.player.is_alife():
             newPosition = tuple(map(operator.add, self.player.position, self.player.direction))
             if newPosition in self.world.tiles:
                 tile = self.world.tiles[newPosition]
@@ -137,26 +137,26 @@ class Running(GameState):
             if tile_type_name == "ice":
                 self._playerForward()
             elif tile_type_name == "forest":
-                self.world.shader = 1
+                self.world.shader = 0
             else:
                 pass
                 
-        else:
-            self.player.steps = 0
+        else: # died
+            self.player.die()
             self.world.shader_modifier = []
             self.world.shader = 0
-            self.hud.textBox.text = "You died a horrible death! ..You collected %s blood points." % self.player.bloodPoints
+            self.hud.textBox.text = "You died a horrible death! ..You survived %s days and collected %s blood points." % (self.player.days, self.player.bloodPoints)
         
     def _playerTurnLeft(self):
-        if self.player.steps > 0:
+        if self.player.is_alife():
             self.player.direction = turnDirection(self.player.direction, -1)
         
     def _playerTurnRight(self):
-        if self.player.steps > 0:
+        if self.player.is_alife():
             self.player.direction = turnDirection(self.player.direction, 1)
             
     def _playerBackward(self):
-        if self.player.steps > 0:
+        if self.player.is_alife():
             self._playerTurnLeft()
             self._playerTurnLeft()        
             
