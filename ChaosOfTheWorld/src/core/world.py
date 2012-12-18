@@ -36,7 +36,7 @@ class World(object):
     def init_shaders(self):
         self.default_shader = 2
         self.shader = self.default_shader
-        for n in range(8):
+        for n in range(9):
             self.shaders.append(Texture("shaders/shader%s.png" % n))
         
     def draw(self):

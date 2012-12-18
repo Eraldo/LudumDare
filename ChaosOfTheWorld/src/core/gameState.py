@@ -133,6 +133,8 @@ class Running(GameState):
                 self._playerForward()
             elif tile_type_name == "forest":
                 self.world.shader = 1
+            elif tile_type_name == "shelter":
+                self.world.shader = 8
             else:
                 self.world.shader = self.world.default_shader 
                 
