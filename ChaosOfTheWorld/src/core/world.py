@@ -48,7 +48,6 @@ class World(object):
     def updateShader(self):
         # mods: [modifier, life]
         self.shader = self.default_shader
-        print(self.shader_modifiers)
         for mod in self.shader_modifiers:
             if mod[1] <= 0:
                 self.shader_modifiers.remove(mod)
