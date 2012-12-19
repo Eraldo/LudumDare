@@ -3,11 +3,11 @@ Created on 14.12.2012
 
 @author: bernhard, eraldo
 '''
-from OpenGL.GL import *#@UnusedWildImport
-from graphic import *#@UnusedWildImport
-from world import *#@UnusedWildImport
-from hud import *#@UnusedWildImport
+from OpenGL.GL import * #@UnusedWildImport
 from ctypes import *
+from graphic import * #@UnusedWildImport
+from hud import * #@UnusedWildImport
+from world import * #@UnusedWildImport
 import operator
 import sys
 
