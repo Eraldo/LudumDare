@@ -134,12 +134,12 @@ class World(object):
                 self.tileTypes[name] = TileType(name, [Texture(name+".png")], speed, enterable)
             
             self.rows = -1
-            self.cols = -1
+            self.cols = 0
             with open(csv_map_file_path, 'rb') as csvfile:
                 map_data = csv.reader(csvfile, delimiter=',')
                 for y, row in enumerate(map_data):
                     self.rows += 1
-                    self.cols = len(row)
+                    self.cols = len(row)-1
                     for x, cell in enumerate(row):
                         if cell:
                             tile_mapping_key = int(cell)
@@ -177,6 +177,7 @@ class World(object):
         load_events()
         
         def load_items():
+            print(self.rows, self.cols)
             csv_items_file_path = os.path.join(data_path, "overworld-3-items.csv")
     
             from item import LightSource
