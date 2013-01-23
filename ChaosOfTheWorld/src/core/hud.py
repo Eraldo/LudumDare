@@ -57,12 +57,20 @@ class TextBox(object):
         self.hud = hud
         self.owningState = owningState
         
+    def drawNewLine(self):
+        glPopMatrix()
+        glTranslatef(0.0, -self.hud.scale / 1.25, 0.0)
+        glPushMatrix()
+        
     def draw(self):
         lineSpace = self.owningState.game.coordinateSize * (self.owningState.game.aspect - 1.0) * 2.0 - 2.0
         usedSpace = 0.0
         glTranslatef(0.5, -1.0, 0.0)
         glPushMatrix()
         for word in self.text.split(" "):
+            newline = "\n" in word
+            word = word.replace("\n", "")
+            
             rendered = self.font.render(word, 1, (255, 255, 255))
             texture = pygame.image.tostring(rendered, 'RGBA', True)
             glBindTexture(GL_TEXTURE_2D, 0)
@@ -72,15 +80,19 @@ class TextBox(object):
             aspect = rendered.get_width() * 1.0 / rendered.get_height()
             
             if lineSpace - usedSpace < aspect * self.hud.scale / 2.0:
-                glPopMatrix()
-                glTranslatef(0.0, -self.hud.scale / 1.25, 0.0)
-                glPushMatrix()
+                self.drawNewLine()
                 usedSpace = 0.0
                 
             glTranslatef(self.hud.scale * aspect / 4.0, 0.0, 0.0)
             draw(aspect, self.hud.scale / 2.0)
             glTranslatef(self.hud.scale * aspect / 4.0 + 0.1, 0.0, 0.0)
-            usedSpace = usedSpace + aspect * self.hud.scale / 2.0 + 0.1
+            if newline:
+                self.drawNewLine()
+                usedSpace = 0.0
+            else:
+                usedSpace = usedSpace + aspect * self.hud.scale / 2.0 + 0.1
+            
+            
         glPopMatrix()
 
 class DisplayBase(object):
